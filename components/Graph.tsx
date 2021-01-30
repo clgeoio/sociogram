@@ -4,8 +4,6 @@ import {
   forceLink,
   forceCenter,
   select,
-  SimulationLinkDatum,
-  SimulationNodeDatum,
   forceCollide,
   scaleSequential,
   // @ts-ignore it does exist
@@ -14,17 +12,7 @@ import {
   drag,
 } from "d3";
 import React, { useEffect, useRef } from "react";
-
-interface Node extends SimulationNodeDatum {
-  id: string;
-  group: number;
-}
-
-interface Link extends SimulationLinkDatum<Node> {
-  source: string;
-  target: string;
-  value: number;
-}
+import { Node, Link } from "./types";
 
 interface GraphProps {
   nodes: Node[];
