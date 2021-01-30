@@ -1,10 +1,7 @@
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
 import { useRef, useState } from "react";
-import { Graph, Node, Link } from "../components/Graph";
-
-const WIDTH = 500;
-const HEIGHT = 500;
+import { Graph } from "../components/Graph";
+import { Link, Node } from "../components/types";
 
 const Home: React.FunctionComponent = () => {
   const [newNode, setNewNode] = useState("");
@@ -50,51 +47,58 @@ const Home: React.FunctionComponent = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
       <Head>
         <title>Sociogram</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <Graph width={WIDTH} height={HEIGHT} nodes={nodes} links={links} />
-      </main>
-      <form onSubmit={handlePersonSubmit}>
-        <label>
-          New Person:{" "}
-          <input
-            type="text"
-            value={newNode}
-            onChange={(e) => setNewNode(e.target.value)}
-          />{" "}
-        </label>
-        <input type="submit" value="Add" />
-      </form>
+      <Graph nodes={nodes} links={links} />
 
-      <form onSubmit={handleLinkSubmit}>
-        <label>
-          From:{" "}
-          <select ref={fromLinkRef}>
-            {nodes.map((node) => (
-              <option key={node.id} value={node.id}>
-                {node.id}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          To:{" "}
-          <select ref={toLinkRef}>
-            {nodes.map((node) => (
-              <option key={node.id} value={node.id}>
-                {node.id}
-              </option>
-            ))}
-          </select>
-        </label>
-        <input type="submit" value="Add" />
-      </form>
-      <footer className={styles.footer}></footer>
+      <div>
+        <form onSubmit={handlePersonSubmit}>
+          <label>
+            New Person:{" "}
+            <input
+              type="text"
+              value={newNode}
+              onChange={(e) => setNewNode(e.target.value)}
+            />{" "}
+          </label>
+          <input type="submit" value="Add" />
+        </form>
+
+        <form onSubmit={handleLinkSubmit}>
+          <label>
+            From:{" "}
+            <select ref={fromLinkRef}>
+              {nodes.map((node) => (
+                <option key={node.id} value={node.id}>
+                  {node.id}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            To:{" "}
+            <select ref={toLinkRef}>
+              {nodes.map((node) => (
+                <option key={node.id} value={node.id}>
+                  {node.id}
+                </option>
+              ))}
+            </select>
+          </label>
+          <input type="submit" value="Add" />
+        </form>
+      </div>
     </div>
   );
 };
