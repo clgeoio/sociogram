@@ -8,6 +8,9 @@ import {
   SimulationNodeDatum,
   scaleLinear,
   forceCollide,
+  scaleSequential,
+  interpolateRainbow,
+  color,
 } from "d3";
 import React, { useEffect, useRef } from "react";
 
@@ -36,6 +39,10 @@ const Graph: React.FunctionComponent<Props> = ({
   nodes,
   links,
 }) => {
+  const nodeSize = (d: Node) => 20 + (2 * d.group + 1);
+  const colour = scaleSequential()
+    .domain([0, 10])
+    .interpolator(interpolateRainbow);
   const ref = useRef<SVGSVGElement>();
 
   useEffect(() => {
@@ -53,6 +60,7 @@ const Graph: React.FunctionComponent<Props> = ({
     const svg = select(ref.current);
 
     const link = svg
+      .append("g")
       .selectAll("line")
       .data(links)
       .enter()
@@ -62,20 +70,18 @@ const Graph: React.FunctionComponent<Props> = ({
       .style("stroke-opacity", 0.6)
       .style("stroke-width", (d) => Math.sqrt(d.value));
 
-    const node = svg
-      .selectAll("circle")
-      .data(nodes)
-      .enter()
-      .append("g")
+    const node = svg.append("g").selectAll("g").data(nodes).enter().append("g");
+    const circles = node
       .append("circle")
-      .attr("r", (d: Node) => 20 + (2 * d.group + 1))
-      .style("stroke", "#FFFFFF")
-      .style("stroke-width", 1.5)
-      .style("fill", "blue");
-    node
-      .append("title")
-      .style("stroke", "red")
-      .text((d: Node) => d.id);
+      .attr("r", nodeSize)
+      .style("fill", (d) => colour(d.group));
+
+    const labels = node
+      .append("text")
+      .text((node) => node.id)
+      .attr("font-size", 15)
+      .attr("dx", (d) => nodeSize(d) / 2 + 15)
+      .attr("dy", (d) => nodeSize(d) / 2 - 5);
 
     force.on("tick", () => {
       link
@@ -84,12 +90,11 @@ const Graph: React.FunctionComponent<Props> = ({
         .attr("x2", (d: any) => d.target.x)
         .attr("y2", (d: any) => d.target.y);
 
-      node.attr("cx", (d: any) => d.x).attr("cy", (d: any) => d.y);
+      node.attr("transform", (d) => `translate(${d.x},${d.y})`);
     });
 
     return () => {
-      svg.selectAll("circle").remove();
-      svg.selectAll("line").remove();
+      svg.selectAll("g").remove();
     };
   }, [width, height, nodes, links]);
 
@@ -98,9 +103,9 @@ const Graph: React.FunctionComponent<Props> = ({
       <defs>
         <marker
           id="arrow"
-          markerWidth="10"
-          markerHeight="10"
-          refX="39"
+          markerWidth="15"
+          markerHeight="15"
+          refX="40"
           refY="3"
           orient="auto"
           markerUnits="strokeWidth"
