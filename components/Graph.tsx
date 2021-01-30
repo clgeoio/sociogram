@@ -6,11 +6,10 @@ import {
   select,
   SimulationLinkDatum,
   SimulationNodeDatum,
-  scaleLinear,
   forceCollide,
   scaleSequential,
+  // @ts-ignore it does exist
   interpolateRainbow,
-  color,
 } from "d3";
 import React, { useEffect, useRef } from "react";
 
