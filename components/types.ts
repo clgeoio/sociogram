@@ -6,8 +6,8 @@ interface Node extends SimulationNodeDatum {
 }
 
 interface Link extends SimulationLinkDatum<Node> {
-  source: string;
-  target: string;
+  source: Node;
+  target: Node;
   value: number;
 }
 

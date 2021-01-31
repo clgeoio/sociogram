@@ -20,6 +20,9 @@ interface GraphProps {
 }
 
 const Graph: React.FunctionComponent<GraphProps> = ({ nodes, links }) => {
+  const nodesCopy = nodes.slice();
+  const linksCopy = links.slice();
+
   const nodeSize = (d: Node) => 20 + (2 * d.group + 1);
   const colour = scaleSequential()
     .domain([0, 10])
@@ -39,11 +42,11 @@ const Graph: React.FunctionComponent<GraphProps> = ({ nodes, links }) => {
     );
 
     // create force simulation
-    forceSimulation(nodes)
+    forceSimulation(nodesCopy)
       .force("charge", forceManyBody().strength(-39))
       .force(
         "link",
-        forceLink(links)
+        forceLink(linksCopy)
           .id((d: any) => d.id)
           .distance(100)
       )
@@ -62,7 +65,7 @@ const Graph: React.FunctionComponent<GraphProps> = ({ nodes, links }) => {
     const link = g
       .append("g")
       .selectAll("line")
-      .data(links)
+      .data(linksCopy)
       .enter()
       .append("line")
       .attr("marker-end", "url(#arrow)")
@@ -73,7 +76,7 @@ const Graph: React.FunctionComponent<GraphProps> = ({ nodes, links }) => {
     const node = g
       .append("g")
       .selectAll("g")
-      .data(nodes)
+      .data(nodesCopy)
       .enter()
       .append("g")
       .attr("transform", (d) => "translate(" + [d.x, d.y] + ")")

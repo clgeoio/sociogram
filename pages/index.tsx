@@ -1,105 +1,131 @@
+import { Box, Flex, Heading } from "@chakra-ui/react";
 import Head from "next/head";
-import { useRef, useState } from "react";
+import React, { useState } from "react";
+import { AddControls } from "../components/AddControls";
 import { Graph } from "../components/Graph";
+import { ImportExport } from "../components/ImportExport";
+import { RemoveControls } from "../components/RemoveControls";
+import { Title } from "../components/Title";
 import { Link, Node } from "../components/types";
 
-const Home: React.FunctionComponent = () => {
-  const [newNode, setNewNode] = useState("");
-  const fromLinkRef = useRef<HTMLSelectElement>();
-  const toLinkRef = useRef<HTMLSelectElement>();
-  const [links, setLinks] = useState<Link[]>([]);
-  const [nodes, setNodes] = useState<Node[]>([]);
+const updateNodeGroupValue = (nodes: Node[], nodeId: string, value: number) => {
+  const nodeCopy = nodes.slice();
+  const nodeIndex = nodeCopy.findIndex((node) => node.id === nodeId);
+  if (nodeCopy[nodeIndex]) {
+    nodeCopy[nodeIndex].group += value;
+  }
 
-  const handlePersonSubmit: React.FormEventHandler = (e) => {
-    e.preventDefault();
-    setNodes([
-      ...nodes,
-      {
-        id: newNode,
-        group: 0,
-      },
-    ]);
-    setNewNode("");
+  return nodeCopy;
+};
+
+interface Data {
+  links: Link[];
+  nodes: Node[];
+}
+
+const Home: React.FunctionComponent = () => {
+  const [title, setTitle] = useState("");
+  const [data, setData] = useState<Data>({
+    links: [],
+    nodes: [],
+  });
+
+  const handleNodeSubmit = (nodeId: string) => {
+    setData({
+      nodes: [
+        ...data.nodes,
+        {
+          id: nodeId,
+          group: 0,
+        },
+      ],
+      links: data.links,
+    });
   };
 
-  const handleLinkSubmit: React.FormEventHandler = (e) => {
-    e.preventDefault();
+  const handleNodeRemove = (nodeId: string) => {
+    setData({
+      links: data.links.filter(
+        (link) => link.source.id != nodeId && link.target.id != nodeId
+      ),
+      nodes: data.nodes.filter((node) => node.id !== nodeId),
+    });
+  };
 
-    if (
-      toLinkRef.current.value &&
-      toLinkRef.current.value != fromLinkRef.current.value
-    ) {
-      setLinks([
-        ...links,
+  const handleLinkSubmit = (fromNodeId: string, toNodeId: string) => {
+    setData({
+      links: [
+        ...data.links,
         {
-          source: fromLinkRef.current.value,
-          target: toLinkRef.current.value,
+          source: data.nodes.find((node) => node.id === fromNodeId),
+          target: data.nodes.find((node) => node.id === toNodeId),
           value: 1,
         },
-      ]);
-      const nodeCopy = nodes.slice();
-      const nodeIndex = nodeCopy.findIndex(
-        (node) => node.id === toLinkRef.current.value
-      );
-      nodeCopy[nodeIndex].group++;
-      setNodes(nodeCopy);
-    }
+      ],
+      nodes: updateNodeGroupValue(data.nodes, toNodeId, 1),
+    });
+  };
+
+  const handleLinkRemove = (link: Link) => {
+    setData({
+      nodes: updateNodeGroupValue(data.nodes, link.target.id, -1),
+      links: data.links.filter((link) => link.index !== link.index),
+    });
+  };
+
+  const handleImport = (
+    title: string,
+    links: { from: string; to: string }[],
+    nodes: Node[]
+  ) => {
+    setTitle(title);
+    setData({
+      links: [],
+      nodes,
+    });
+    links.forEach((link) => handleLinkSubmit(link.from, link.to));
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
-    >
+    <Flex flexDirection="column" minHeight="100vh">
       <Head>
         <title>Sociogram</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Flex margin={5} justifyContent="space-between">
+        <Flex flexDirection="column">
+          <Heading>Sociogram</Heading>
+          <Title title={title} handleTitleSet={(value) => setTitle(value)} />
+        </Flex>
+        <ImportExport
+          title={title}
+          nodes={data.nodes}
+          links={data.links}
+          onImport={handleImport}
+        />
+      </Flex>
 
-      <Graph nodes={nodes} links={links} />
+      <Graph nodes={data.nodes} links={data.links} />
 
-      <div>
-        <form onSubmit={handlePersonSubmit}>
-          <label>
-            New Person:{" "}
-            <input
-              type="text"
-              value={newNode}
-              onChange={(e) => setNewNode(e.target.value)}
-            />{" "}
-          </label>
-          <input type="submit" value="Add" />
-        </form>
+      <Flex justifyContent="space-between" backgroundColor="gray.100">
+        <Box margin={5} padding={2} width="50%" borderRadius={4}>
+          <AddControls
+            nodes={data.nodes}
+            onNodeSubmit={handleNodeSubmit}
+            onLinkSubmit={handleLinkSubmit}
+          />
+        </Box>
 
-        <form onSubmit={handleLinkSubmit}>
-          <label>
-            From:{" "}
-            <select ref={fromLinkRef}>
-              {nodes.map((node) => (
-                <option key={node.id} value={node.id}>
-                  {node.id}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            To:{" "}
-            <select ref={toLinkRef}>
-              {nodes.map((node) => (
-                <option key={node.id} value={node.id}>
-                  {node.id}
-                </option>
-              ))}
-            </select>
-          </label>
-          <input type="submit" value="Add" />
-        </form>
-      </div>
-    </div>
+        <Box margin={5} padding={2} width="50%" borderRadius={4}>
+          <RemoveControls
+            nodes={data.nodes}
+            links={data.links}
+            onNodeRemove={handleNodeRemove}
+            onLinkRemove={handleLinkRemove}
+          />
+        </Box>
+      </Flex>
+    </Flex>
   );
 };
 
