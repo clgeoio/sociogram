@@ -1,7 +1,7 @@
 import {
   FormControl,
   FormLabel,
-  HStack,
+  Stack,
   Select,
   Button,
 } from "@chakra-ui/react";
@@ -43,7 +43,7 @@ const RemoveControls: React.FunctionComponent<RemoveControlsProps> = ({
     <Fragment>
       <FormControl>
         <FormLabel fontSize="sm">Remove person</FormLabel>
-        <HStack>
+        <Stack direction={{ base: "column", md: "row" }}>
           <Select
             ref={removeNodeRef}
             size="sm"
@@ -66,12 +66,12 @@ const RemoveControls: React.FunctionComponent<RemoveControlsProps> = ({
           >
             Remove Person
           </Button>
-        </HStack>
+        </Stack>
       </FormControl>
 
       <FormControl marginTop={5}>
         <FormLabel fontSize="sm">Remove Relationship</FormLabel>
-        <HStack>
+        <Stack direction={{ base: "column", md: "row" }}>
           <Select
             ref={removeLinkRef}
             size="sm"
@@ -98,7 +98,7 @@ const RemoveControls: React.FunctionComponent<RemoveControlsProps> = ({
           >
             Remove Relationship
           </Button>
-        </HStack>
+        </Stack>
       </FormControl>
     </Fragment>
   );

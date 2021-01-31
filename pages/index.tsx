@@ -1,4 +1,13 @@
-import { Box, Flex, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Heading,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from "@chakra-ui/react";
 import { snakeCase } from "lodash";
 import Head from "next/head";
 import React, { useState } from "react";
@@ -25,6 +34,10 @@ interface Data {
 }
 
 const Home: React.FunctionComponent = () => {
+  const [tabIndex, setTabIndex] = React.useState(0);
+  const handleTabsChange = (index) => {
+    setTabIndex(index);
+  };
   const [title, setTitle] = useState("");
   const [data, setData] = useState<Data>({
     links: [],
@@ -112,33 +125,29 @@ const Home: React.FunctionComponent = () => {
 
       <Graph links={data.links} nodes={data.nodes} />
 
-      <Flex
-        justifyContent="space-between"
-        backgroundColor="gray.100"
-        flexDirection={{ base: "column", md: "row" }}
-      >
-        <Box
-          margin={5}
-          padding={2}
-          width={{ base: "auto", md: "50%" }}
-          borderRadius={4}
-        >
-          <AddControls
-            nodes={data.nodes}
-            onNodeSubmit={handleNodeSubmit}
-            onLinkSubmit={handleLinkSubmit}
-          />
-        </Box>
-
-        <Box margin={5} padding={2} flexGrow={1} borderRadius={4}>
-          <RemoveControls
-            nodes={data.nodes}
-            links={data.links}
-            onNodeRemove={handleNodeRemove}
-            onLinkRemove={handleLinkRemove}
-          />
-        </Box>
-      </Flex>
+      <Tabs index={tabIndex} onChange={handleTabsChange} variant="enclosed">
+        <TabList>
+          <Tab>Add</Tab>
+          <Tab>Remove</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <AddControls
+              nodes={data.nodes}
+              onNodeSubmit={handleNodeSubmit}
+              onLinkSubmit={handleLinkSubmit}
+            />
+          </TabPanel>
+          <TabPanel>
+            <RemoveControls
+              nodes={data.nodes}
+              links={data.links}
+              onNodeRemove={handleNodeRemove}
+              onLinkRemove={handleLinkRemove}
+            />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </Flex>
   );
 };

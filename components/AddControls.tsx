@@ -1,11 +1,11 @@
 import {
   FormControl,
   FormLabel,
-  HStack,
   Input,
   Button,
   Select,
   Text,
+  Stack,
 } from "@chakra-ui/react";
 import React, { Fragment, useRef, useState } from "react";
 import { Node } from "../components/types";
@@ -42,7 +42,7 @@ const AddControls: React.FunctionComponent<AddControlsProps> = ({
     <Fragment>
       <FormControl>
         <FormLabel fontSize="sm">Add new person</FormLabel>
-        <HStack>
+        <Stack direction={{ base: "column", md: "row" }}>
           <Input
             backgroundColor="white"
             borderRadius={4}
@@ -60,12 +60,12 @@ const AddControls: React.FunctionComponent<AddControlsProps> = ({
           >
             Add Person
           </Button>
-        </HStack>
+        </Stack>
       </FormControl>
 
       <FormControl marginTop={5}>
         <FormLabel fontSize="sm">Add relationship</FormLabel>
-        <HStack>
+        <Stack direction={{ base: "column", md: "row" }}>
           <Select
             ref={fromLinkRef}
             size="sm"
@@ -103,7 +103,7 @@ const AddControls: React.FunctionComponent<AddControlsProps> = ({
           >
             Add Relationship
           </Button>
-        </HStack>
+        </Stack>
       </FormControl>
     </Fragment>
   );
