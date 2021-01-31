@@ -66,7 +66,7 @@ const Graph: React.FunctionComponent<GraphProps> = ({ nodes, links }) => {
       .enter()
       .append("line")
 
-      .attr("marker-mid", "url(#arrow)")
+      .attr("marker-end", "url(#arrow)")
       .style("stroke", "#999999")
       .style("stroke-opacity", 0.6)
       .style("stroke-width", (d) => Math.sqrt(d.value));
@@ -119,7 +119,7 @@ const Graph: React.FunctionComponent<GraphProps> = ({ nodes, links }) => {
           id="arrow"
           markerWidth="15"
           markerHeight="15"
-          refX="0"
+          refX="40"
           refY="3"
           orient="auto"
           markerUnits="strokeWidth"
