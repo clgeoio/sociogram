@@ -35,7 +35,7 @@ const Graph: React.FunctionComponent<GraphProps> = ({ nodes, links }) => {
     svg.call(
       zoom()
         .on("zoom", ({ transform }) => g.attr("transform", transform))
-        .scaleExtent([1, 40])
+        .scaleExtent([0.8, 40])
     );
 
     // create force simulation
