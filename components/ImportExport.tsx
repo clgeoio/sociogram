@@ -68,10 +68,15 @@ const ImportExport: React.FunctionComponent<ImportExportProps> = ({
         ref={ref}
         onChange={handleUpload}
       />
-      <Button colorScheme="blue" marginRight={5} onClick={handleImportClick}>
+      <Button
+        colorScheme="blue"
+        marginRight={5}
+        onClick={handleImportClick}
+        size="sm"
+      >
         {loading ? <Spinner /> : "Import"}
       </Button>
-      <Button colorScheme="green" onClick={handleExport}>
+      <Button colorScheme="green" onClick={handleExport} size="sm">
         Export
       </Button>
     </Flex>
