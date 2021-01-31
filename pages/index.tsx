@@ -1,4 +1,5 @@
 import { Box, Flex, Heading } from "@chakra-ui/react";
+import { snakeCase } from "lodash";
 import Head from "next/head";
 import React, { useState } from "react";
 import { AddControls } from "../components/AddControls";
@@ -60,30 +61,34 @@ const Home: React.FunctionComponent = () => {
           source: data.nodes.find((node) => node.id === fromNodeId),
           target: data.nodes.find((node) => node.id === toNodeId),
           value: 1,
+          id: snakeCase(`${fromNodeId}_${toNodeId}`),
         },
       ],
       nodes: updateNodeGroupValue(data.nodes, toNodeId, 1),
     });
   };
 
-  const handleLinkRemove = (link: Link) => {
+  const handleLinkRemove = (linkId: string) => {
     setData({
-      nodes: updateNodeGroupValue(data.nodes, link.target.id, -1),
-      links: data.links.filter((link) => link.index !== link.index),
+      nodes: updateNodeGroupValue(
+        data.nodes,
+        data.links.find((l) => l.id === linkId).target.id,
+        -1
+      ),
+      links: data.links.filter((link) => link.id != linkId),
     });
   };
 
-  const handleImport = (
-    title: string,
-    links: { from: string; to: string }[],
-    nodes: Node[]
-  ) => {
+  const handleImport = (title: string, links: Link[], nodes: Node[]) => {
     setTitle(title);
     setData({
-      links: [],
       nodes,
+      links: links.map((link) => ({
+        ...link,
+        source: nodes.find((node) => node.id === link.source.id),
+        target: nodes.find((node) => node.id === link.target.id),
+      })),
     });
-    links.forEach((link) => handleLinkSubmit(link.from, link.to));
   };
 
   return (
@@ -105,7 +110,7 @@ const Home: React.FunctionComponent = () => {
         />
       </Flex>
 
-      <Graph nodes={data.nodes} links={data.links} />
+      <Graph links={data.links} nodes={data.nodes} />
 
       <Flex justifyContent="space-between" backgroundColor="gray.100">
         <Box margin={5} padding={2} width="50%" borderRadius={4}>

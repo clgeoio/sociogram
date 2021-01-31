@@ -12,7 +12,7 @@ interface RemoveControlsProps {
   nodes: Node[];
   links: Link[];
   onNodeRemove: (nodeId: string) => void;
-  onLinkRemove: (linkIndex: Link) => void;
+  onLinkRemove: (linkId: string) => void;
 }
 
 const RemoveControls: React.FunctionComponent<RemoveControlsProps> = ({
@@ -32,7 +32,10 @@ const RemoveControls: React.FunctionComponent<RemoveControlsProps> = ({
 
   const handleLinkRemove = () => {
     if (removeLinkRef.current.value) {
-      onLinkRemove(links[removeLinkRef.current.value]);
+      const option =
+        removeLinkRef.current.options[removeLinkRef.current.selectedIndex];
+      const id = option.getAttribute("data-id");
+      onLinkRemove(id);
     }
   };
 
@@ -46,6 +49,7 @@ const RemoveControls: React.FunctionComponent<RemoveControlsProps> = ({
             size="sm"
             backgroundColor="white"
             borderRadius={4}
+            placeholder="Select person..."
           >
             {nodes.map((node) => (
               <option key={node.id} value={node.id}>
@@ -73,11 +77,13 @@ const RemoveControls: React.FunctionComponent<RemoveControlsProps> = ({
             size="sm"
             backgroundColor="white"
             borderRadius={4}
+            placeholder="Select relationship..."
+            onChange={(e) => console.log(e.target.selectedIndex)}
           >
             {links.map((link) => {
               const format = `${link.source.id} likes ${link.target.id}`;
               return (
-                <option key={format} value={link.index}>
+                <option key={format} data-id={link.id}>
                   {format}
                 </option>
               );

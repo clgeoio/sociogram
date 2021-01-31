@@ -71,6 +71,7 @@ const AddControls: React.FunctionComponent<AddControlsProps> = ({
             size="sm"
             backgroundColor="white"
             borderRadius={4}
+            placeholder="Select person..."
           >
             {nodes.map((node) => (
               <option key={node.id} value={node.id}>
@@ -84,6 +85,7 @@ const AddControls: React.FunctionComponent<AddControlsProps> = ({
             size="sm"
             backgroundColor="white"
             borderRadius={4}
+            placeholder="Select person..."
           >
             {nodes.length > 1 &&
               nodes.reverse().map((node) => (

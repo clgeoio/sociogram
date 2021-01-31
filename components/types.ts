@@ -9,6 +9,7 @@ interface Link extends SimulationLinkDatum<Node> {
   source: Node;
   target: Node;
   value: number;
+  id: string;
 }
 
 export type { Node, Link };

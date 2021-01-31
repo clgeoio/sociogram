@@ -7,23 +7,8 @@ interface ImportExportProps {
   title: string;
   links: Link[];
   nodes: Node[];
-  onImport: (
-    title: string,
-    links: { from: string; to: string }[],
-    nodes: Node[]
-  ) => void;
+  onImport: (title: string, links: Link[], nodes: Node[]) => void;
 }
-
-const stripLinkData: (link: Link) => Link = (link) => ({
-  source: stripNodeData(link.source),
-  target: stripNodeData(link.target),
-  value: link.value,
-});
-
-const stripNodeData: (node: Node) => Node = (node) => ({
-  id: node.id,
-  group: node.group,
-});
 
 const ImportExport: React.FunctionComponent<ImportExportProps> = ({
   title,
@@ -40,10 +25,7 @@ const ImportExport: React.FunctionComponent<ImportExportProps> = ({
 
     const json = JSON.stringify({
       title,
-      links: links.map((link) => ({
-        from: link.source.id,
-        to: link.target.id,
-      })),
+      links,
       nodes,
     });
     const blob = new Blob([json], { type: "application/json" });
@@ -52,8 +34,7 @@ const ImportExport: React.FunctionComponent<ImportExportProps> = ({
     link.href = href;
     link.download = fileName;
     document.body.appendChild(link);
-
-    //link.click();
+    link.click();
     document.body.removeChild(link);
   };
 
@@ -73,8 +54,6 @@ const ImportExport: React.FunctionComponent<ImportExportProps> = ({
     });
 
     reader.addEventListener("error", (e) => {
-      // handle error
-
       setLoading(false);
     });
     reader.readAsText(e.target.files[0]);
