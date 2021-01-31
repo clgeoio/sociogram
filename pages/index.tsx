@@ -115,12 +115,6 @@ const Home: React.FunctionComponent = () => {
           <Heading>Sociogram</Heading>
           <Title title={title} handleTitleSet={(value) => setTitle(value)} />
         </Flex>
-        <ImportExport
-          title={title}
-          nodes={data.nodes}
-          links={data.links}
-          onImport={handleImport}
-        />
       </Flex>
 
       <Graph links={data.links} nodes={data.nodes} />
@@ -129,8 +123,9 @@ const Home: React.FunctionComponent = () => {
         <TabList>
           <Tab>Add</Tab>
           <Tab>Remove</Tab>
+          <Tab>Settings</Tab>
         </TabList>
-        <TabPanels>
+        <TabPanels minHeight="350px">
           <TabPanel>
             <AddControls
               nodes={data.nodes}
@@ -144,6 +139,14 @@ const Home: React.FunctionComponent = () => {
               links={data.links}
               onNodeRemove={handleNodeRemove}
               onLinkRemove={handleLinkRemove}
+            />
+          </TabPanel>
+          <TabPanel>
+            <ImportExport
+              title={title}
+              nodes={data.nodes}
+              links={data.links}
+              onImport={handleImport}
             />
           </TabPanel>
         </TabPanels>
