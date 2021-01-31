@@ -112,8 +112,17 @@ const Home: React.FunctionComponent = () => {
 
       <Graph links={data.links} nodes={data.nodes} />
 
-      <Flex justifyContent="space-between" backgroundColor="gray.100">
-        <Box margin={5} padding={2} width="50%" borderRadius={4}>
+      <Flex
+        justifyContent="space-between"
+        backgroundColor="gray.100"
+        flexDirection={{ base: "column", md: "row" }}
+      >
+        <Box
+          margin={5}
+          padding={2}
+          width={{ base: "auto", md: "50%" }}
+          borderRadius={4}
+        >
           <AddControls
             nodes={data.nodes}
             onNodeSubmit={handleNodeSubmit}
@@ -121,7 +130,7 @@ const Home: React.FunctionComponent = () => {
           />
         </Box>
 
-        <Box margin={5} padding={2} width="50%" borderRadius={4}>
+        <Box margin={5} padding={2} flexGrow={1} borderRadius={4}>
           <RemoveControls
             nodes={data.nodes}
             links={data.links}
