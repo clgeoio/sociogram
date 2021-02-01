@@ -1,16 +1,27 @@
+import { ChevronDownIcon, PlusSquareIcon } from "@chakra-ui/icons";
 import {
   Flex,
   Heading,
+  Menu,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
+  MenuButton,
+  Button,
+  MenuList,
+  MenuItem,
+  Box,
+  Text,
+  IconButton,
 } from "@chakra-ui/react";
 import { snakeCase } from "lodash";
 import Head from "next/head";
 import React, { useState } from "react";
 import { AddControls } from "../components/AddControls";
+import { AddPersonModal } from "../components/AddPersonModal";
+import { AddRelationshipModal } from "../components/AddRelationshipModal";
 import { Graph } from "../components/Graph";
 import { ImportExport } from "../components/ImportExport";
 import { RemoveControls } from "../components/RemoveControls";
@@ -128,11 +139,53 @@ const Home: React.FunctionComponent = () => {
         <title>Sociogram.me</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Flex margin={5} justifyContent="space-between">
+      <Flex
+        margin={5}
+        justifyContent="space-between"
+        flexDirection={{ base: "column", md: "column" }}
+      >
         <Flex flexDirection="column">
           <Heading>Sociogram.me</Heading>
           <Title title={title} handleTitleSet={(value) => setTitle(value)} />
         </Flex>
+        <Box marginTop={{ base: 2, md: 0 }}>
+          <Menu>
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+              Add
+            </MenuButton>
+            <MenuList>
+              <MenuItem>
+                <AddPersonModal onNodeSubmit={handleNodeSubmit} />
+              </MenuItem>
+              <MenuItem>
+                <AddRelationshipModal
+                  nodes={data.nodes}
+                  onLinkSubmit={handleLinkSubmit}
+                />
+              </MenuItem>
+            </MenuList>
+          </Menu>
+          <Menu>
+            <MenuButton
+              marginLeft={2}
+              as={Button}
+              rightIcon={<ChevronDownIcon />}
+            >
+              Remove
+            </MenuButton>
+            <MenuList>
+              <MenuItem>
+                <AddPersonModal onNodeSubmit={handleNodeSubmit} />
+              </MenuItem>
+              <MenuItem>
+                <AddRelationshipModal
+                  nodes={data.nodes}
+                  onLinkSubmit={handleLinkSubmit}
+                />
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Box>
       </Flex>
 
       <Graph links={data.links} nodes={data.nodes} />
@@ -143,7 +196,7 @@ const Home: React.FunctionComponent = () => {
           <Tab>Remove</Tab>
           <Tab>Settings</Tab>
         </TabList>
-        <TabPanels minHeight="350px">
+        <TabPanels>
           <TabPanel>
             <AddControls
               nodes={data.nodes}

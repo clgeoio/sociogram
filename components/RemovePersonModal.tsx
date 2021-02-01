@@ -1,0 +1,82 @@
+import React, { useRef } from "react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Text,
+  Button,
+  useDisclosure,
+  FormControl,
+  FormLabel,
+  Select,
+} from "@chakra-ui/react";
+import { Node } from "../components/types";
+
+interface RemovePersonModalProps {
+  nodes: Node[];
+  onNodeRemove: (nodeId: string) => void;
+}
+
+const RemovePersonModal: React.FunctionComponent<RemovePersonModalProps> = ({
+  nodes,
+  onNodeRemove,
+}) => {
+  const removeNodeRef = useRef<HTMLSelectElement>();
+
+  const handleNodeRemove = () => {
+    if (removeNodeRef.current.value) {
+      onNodeRemove(removeNodeRef.current.value);
+    }
+  };
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <>
+      <Text onClick={onOpen}>Person</Text>
+      <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Remove New Person</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl>
+              <FormLabel fontSize="sm">Remove person</FormLabel>
+
+              <Select
+                ref={removeNodeRef}
+                size="sm"
+                backgroundColor="white"
+                borderRadius={4}
+                placeholder="Select person..."
+              >
+                {nodes.map((node) => (
+                  <option key={node.id} value={node.id}>
+                    {node.id}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              size="sm"
+              minWidth="fit-content"
+              colorScheme="red"
+              variant="outline"
+              onClick={handleNodeRemove}
+            >
+              Remove Person
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export { RemovePersonModal };

@@ -110,3 +110,4 @@ const AddControls: React.FunctionComponent<AddControlsProps> = ({
 };
 
 export { AddControls };
+export type { AddControlsProps };
