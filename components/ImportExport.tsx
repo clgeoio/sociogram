@@ -59,6 +59,26 @@ const ImportExport: React.FunctionComponent<ImportExportProps> = ({
     reader.readAsText(e.target.files[0]);
   };
 
+  const handlePdf = () => {
+    const svg = document.getElementById("svg").outerHTML;
+
+    const data = JSON.stringify({ svg, title });
+    const xhttp = new XMLHttpRequest();
+
+    xhttp.responseType = "arraybuffer";
+    xhttp.open("POST", "/api/pdf", true);
+    xhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+    xhttp.setRequestHeader("Accept", "application/json, text/plain, */*");
+    xhttp.send(data);
+    xhttp.onload = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        const pdfBlob = new Blob([xhttp.response], { type: "application/pdf" });
+        const url = window.URL.createObjectURL(pdfBlob);
+        window.open(url);
+      }
+    };
+  };
+
   return (
     <Flex>
       <Input
@@ -76,8 +96,22 @@ const ImportExport: React.FunctionComponent<ImportExportProps> = ({
       >
         {loading ? <Spinner /> : "Import"}
       </Button>
-      <Button colorScheme="green" onClick={handleExport} size="sm">
+      <Button
+        colorScheme="green"
+        marginRight={5}
+        onClick={handleExport}
+        size="sm"
+      >
         Export
+      </Button>
+
+      <Button
+        colorScheme="green"
+        variant="outline"
+        onClick={handlePdf}
+        size="sm"
+      >
+        PDF
       </Button>
     </Flex>
   );

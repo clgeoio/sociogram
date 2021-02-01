@@ -109,6 +109,7 @@ const Graph: React.FunctionComponent<GraphProps> = ({ nodes, links }) => {
 
   return (
     <svg
+      id="svg"
       style={{
         flexGrow: 1,
       }}
