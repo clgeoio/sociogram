@@ -55,6 +55,11 @@ const AddPersonModal: React.FunctionComponent<AddPersonModalProps> = ({
               type="text"
               value={newNode}
               onChange={(e) => setNewNode(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handleNodeSubmit();
+                }
+              }}
             />
           </FormControl>
         </ModalBody>
