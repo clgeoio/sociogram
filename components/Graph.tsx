@@ -11,26 +11,31 @@ import {
   zoom,
   drag,
 } from "d3";
-import React, { useEffect, useRef } from "react";
-import { Node, Link } from "./types";
+import React, { Fragment, useEffect } from "react";
+import { Node, Link } from "../types";
 
 interface GraphProps {
   nodes: Node[];
   links: Link[];
+  svgRef: React.MutableRefObject<SVGSVGElement>;
 }
 
-const Graph: React.FunctionComponent<GraphProps> = ({ nodes, links }) => {
+const Graph: React.FunctionComponent<GraphProps> = ({
+  nodes,
+  links,
+  children,
+  svgRef,
+}) => {
   const nodeSize = (d: Node) => 20 + (2 * d.group + 1);
   const colour = scaleSequential()
     .domain([0, 10])
     .interpolator(interpolateRainbow);
-  const ref = useRef<SVGSVGElement>();
 
   useEffect(() => {
-    const width = ref.current.clientWidth;
-    const height = ref.current.clientHeight;
+    const width = svgRef.current.clientWidth;
+    const height = svgRef.current.clientHeight;
 
-    const svg = select(ref.current);
+    const svg = select(svgRef.current);
     const g = svg.append("g").attr("cursor", "grab");
     svg.call(
       zoom()
@@ -107,29 +112,7 @@ const Graph: React.FunctionComponent<GraphProps> = ({ nodes, links }) => {
     };
   }, [nodes, links]);
 
-  return (
-    <svg
-      id="svg"
-      style={{
-        flexGrow: 1,
-      }}
-      ref={ref}
-    >
-      <defs>
-        <marker
-          id="arrow"
-          markerWidth="15"
-          markerHeight="15"
-          refX="40"
-          refY="3"
-          orient="auto"
-          markerUnits="strokeWidth"
-        >
-          <path d="M0,0 L0,6 L9,3 z" fill="black" />
-        </marker>
-      </defs>
-    </svg>
-  );
+  return <Fragment>{children}</Fragment>;
 };
 
 export { Graph };

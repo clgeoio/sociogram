@@ -1,32 +1,33 @@
-import { ChevronDownIcon, PlusSquareIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+  ChevronDownIcon,
+  DeleteIcon,
+  DownloadIcon,
+} from "@chakra-ui/icons";
 import {
   Flex,
   Heading,
   Menu,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   MenuButton,
   Button,
   MenuList,
   MenuItem,
   Box,
-  Text,
-  IconButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { snakeCase } from "lodash";
 import Head from "next/head";
-import React, { useState } from "react";
-import { AddControls } from "../components/AddControls";
+import React, { useRef, useState } from "react";
+import { Import } from "../components/Import";
 import { AddPersonModal } from "../components/AddPersonModal";
 import { AddRelationshipModal } from "../components/AddRelationshipModal";
 import { Graph } from "../components/Graph";
-import { ImportExport } from "../components/ImportExport";
-import { RemoveControls } from "../components/RemoveControls";
 import { Title } from "../components/Title";
-import { Link, Node } from "../components/types";
+import { Link, Node } from "../types";
+import { RemovePersonModal } from "../components/RemovePersonModal";
+import { RemoveRelationshipModal } from "../components/RemoveRelationshipModal";
+import { MainMenu } from "../components/MainMenu";
+import { handleExport, handlePdfExport } from "../utils/exportUtils";
 
 const updateNodeGroupValue = (nodes: Node[], nodeId: string, value: number) => {
   const nodeCopy = nodes.slice();
@@ -44,10 +45,28 @@ interface Data {
 }
 
 const Home: React.FunctionComponent = () => {
-  const [tabIndex, setTabIndex] = React.useState(0);
-  const handleTabsChange = (index) => {
-    setTabIndex(index);
-  };
+  const {
+    isOpen: isAddPersonOpen,
+    onOpen: onAddPersonOpen,
+    onClose: onAddPersonClose,
+  } = useDisclosure();
+  const {
+    isOpen: isAddRelationsipOpen,
+    onOpen: onAddRelationsipOpen,
+    onClose: onAddRelationsipClose,
+  } = useDisclosure();
+  const {
+    isOpen: isRemovePersonOpen,
+    onOpen: onRemovePersonOpen,
+    onClose: onRemovePersonClose,
+  } = useDisclosure();
+  const {
+    isOpen: isRemoveRelationsipOpen,
+    onOpen: onRemoveRelationsipOpen,
+    onClose: onRemoveRelationsipClose,
+  } = useDisclosure();
+
+  const svgRef = useRef<SVGSVGElement>();
   const [title, setTitle] = useState("");
   const [data, setData] = useState<Data>({
     links: [],
@@ -114,25 +133,6 @@ const Home: React.FunctionComponent = () => {
     });
   };
 
-  const handlePdfExport = () => {
-    const svg = document.getElementById("svg").outerHTML;
-    const data = JSON.stringify({ svg, title });
-    const xhttp = new XMLHttpRequest();
-
-    xhttp.responseType = "arraybuffer";
-    xhttp.open("POST", "/api/pdf", true);
-    xhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
-    xhttp.setRequestHeader("Accept", "application/json, text/plain, */*");
-    xhttp.send(data);
-    xhttp.onload = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        const pdfBlob = new Blob([xhttp.response], { type: "application/pdf" });
-        const url = window.URL.createObjectURL(pdfBlob);
-        window.open(url);
-      }
-    };
-  };
-
   return (
     <Flex flexDirection="column" minHeight="100vh">
       <Head>
@@ -142,87 +142,72 @@ const Home: React.FunctionComponent = () => {
       <Flex
         margin={5}
         justifyContent="space-between"
-        flexDirection={{ base: "column", md: "column" }}
+        flexDirection={{ base: "column", md: "row" }}
       >
         <Flex flexDirection="column">
           <Heading>Sociogram.me</Heading>
           <Title title={title} handleTitleSet={(value) => setTitle(value)} />
         </Flex>
-        <Box marginTop={{ base: 2, md: 0 }}>
-          <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-              Add
-            </MenuButton>
-            <MenuList>
-              <MenuItem>
-                <AddPersonModal onNodeSubmit={handleNodeSubmit} />
-              </MenuItem>
-              <MenuItem>
-                <AddRelationshipModal
-                  nodes={data.nodes}
-                  onLinkSubmit={handleLinkSubmit}
-                />
-              </MenuItem>
-            </MenuList>
-          </Menu>
-          <Menu>
-            <MenuButton
-              marginLeft={2}
-              as={Button}
-              rightIcon={<ChevronDownIcon />}
-            >
-              Remove
-            </MenuButton>
-            <MenuList>
-              <MenuItem>
-                <AddPersonModal onNodeSubmit={handleNodeSubmit} />
-              </MenuItem>
-              <MenuItem>
-                <AddRelationshipModal
-                  nodes={data.nodes}
-                  onLinkSubmit={handleLinkSubmit}
-                />
-              </MenuItem>
-            </MenuList>
-          </Menu>
+        <Box marginTop={{ base: 2, md: 5 }}>
+          <MainMenu
+            onAddPersonOpen={onAddPersonOpen}
+            onAddRelationshipOpen={onAddRelationsipOpen}
+            onRemovePersonOpen={onRemovePersonOpen}
+            onRemoveRelationshipOpen={onRemoveRelationsipClose}
+            onImport={handleImport}
+            onExport={() => handleExport(title, data.nodes, data.links)}
+            onExportPdf={() => handlePdfExport(title, svgRef)}
+          />
         </Box>
       </Flex>
 
-      <Graph links={data.links} nodes={data.nodes} />
+      <Graph links={data.links} nodes={data.nodes} svgRef={svgRef}>
+        <svg
+          id="svg"
+          style={{
+            flexGrow: 1,
+          }}
+          ref={svgRef}
+        >
+          <defs>
+            <marker
+              id="arrow"
+              markerWidth="15"
+              markerHeight="15"
+              refX="40"
+              refY="3"
+              orient="auto"
+              markerUnits="strokeWidth"
+            >
+              <path d="M0,0 L0,6 L9,3 z" fill="black" />
+            </marker>
+          </defs>
+        </svg>
+      </Graph>
 
-      <Tabs index={tabIndex} onChange={handleTabsChange} variant="enclosed">
-        <TabList>
-          <Tab>Add</Tab>
-          <Tab>Remove</Tab>
-          <Tab>Settings</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            <AddControls
-              nodes={data.nodes}
-              onNodeSubmit={handleNodeSubmit}
-              onLinkSubmit={handleLinkSubmit}
-            />
-          </TabPanel>
-          <TabPanel>
-            <RemoveControls
-              nodes={data.nodes}
-              links={data.links}
-              onNodeRemove={handleNodeRemove}
-              onLinkRemove={handleLinkRemove}
-            />
-          </TabPanel>
-          <TabPanel>
-            <ImportExport
-              title={title}
-              nodes={data.nodes}
-              links={data.links}
-              onImport={handleImport}
-              onPdfExport={handlePdfExport}
-            />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+      <AddPersonModal
+        isOpen={isAddPersonOpen}
+        onClose={onAddPersonClose}
+        onNodeSubmit={handleNodeSubmit}
+      />
+      <AddRelationshipModal
+        isOpen={isAddRelationsipOpen}
+        onClose={onAddRelationsipClose}
+        nodes={data.nodes}
+        onLinkSubmit={handleLinkSubmit}
+      />
+      <RemovePersonModal
+        isOpen={isRemovePersonOpen}
+        onClose={onRemovePersonClose}
+        nodes={data.nodes}
+        onNodeRemove={handleNodeRemove}
+      />
+      <RemoveRelationshipModal
+        isOpen={isRemoveRelationsipOpen}
+        onClose={onRemoveRelationsipClose}
+        links={data.links}
+        onLinkRemove={handleLinkRemove}
+      />
     </Flex>
   );
 };
