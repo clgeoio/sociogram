@@ -1,6 +1,6 @@
 import { Button, Flex, Input, Spinner } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
-import { Link, Node } from "../components/types";
+import { Link, Node } from "../types";
 
 interface ImportProps {
   onImport: (title: string, links: Link[], nodes: Node[]) => void;
