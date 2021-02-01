@@ -103,6 +103,25 @@ const Home: React.FunctionComponent = () => {
     });
   };
 
+  const handlePdfExport = () => {
+    const svg = document.getElementById("svg").outerHTML;
+    const data = JSON.stringify({ svg, title });
+    const xhttp = new XMLHttpRequest();
+
+    xhttp.responseType = "arraybuffer";
+    xhttp.open("POST", "/api/pdf", true);
+    xhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+    xhttp.setRequestHeader("Accept", "application/json, text/plain, */*");
+    xhttp.send(data);
+    xhttp.onload = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        const pdfBlob = new Blob([xhttp.response], { type: "application/pdf" });
+        const url = window.URL.createObjectURL(pdfBlob);
+        window.open(url);
+      }
+    };
+  };
+
   return (
     <Flex flexDirection="column" minHeight="100vh">
       <Head>
@@ -146,6 +165,7 @@ const Home: React.FunctionComponent = () => {
               nodes={data.nodes}
               links={data.links}
               onImport={handleImport}
+              onPdfExport={handlePdfExport}
             />
           </TabPanel>
         </TabPanels>
