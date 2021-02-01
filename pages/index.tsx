@@ -1,24 +1,15 @@
 import {
-  AddIcon,
-  ChevronDownIcon,
-  DeleteIcon,
-  DownloadIcon,
-} from "@chakra-ui/icons";
-import {
   Flex,
   Heading,
-  Menu,
-  MenuButton,
-  Button,
-  MenuList,
-  MenuItem,
   Box,
   useDisclosure,
+  Text,
+  Center,
+  Link as LinkComponent,
 } from "@chakra-ui/react";
 import { snakeCase } from "lodash";
 import Head from "next/head";
 import React, { useRef, useState } from "react";
-import { Import } from "../components/Import";
 import { AddPersonModal } from "../components/AddPersonModal";
 import { AddRelationshipModal } from "../components/AddRelationshipModal";
 import { Graph } from "../components/Graph";
@@ -51,9 +42,9 @@ const Home: React.FunctionComponent = () => {
     onClose: onAddPersonClose,
   } = useDisclosure();
   const {
-    isOpen: isAddRelationsipOpen,
-    onOpen: onAddRelationsipOpen,
-    onClose: onAddRelationsipClose,
+    isOpen: isAddRelationshipOpen,
+    onOpen: onAddRelationshipOpen,
+    onClose: onAddRelationshipClose,
   } = useDisclosure();
   const {
     isOpen: isRemovePersonOpen,
@@ -61,9 +52,9 @@ const Home: React.FunctionComponent = () => {
     onClose: onRemovePersonClose,
   } = useDisclosure();
   const {
-    isOpen: isRemoveRelationsipOpen,
-    onOpen: onRemoveRelationsipOpen,
-    onClose: onRemoveRelationsipClose,
+    isOpen: isRemoveRelationshipOpen,
+    onOpen: onRemoveRelationshipOpen,
+    onClose: onRemoveRelationshipClose,
   } = useDisclosure();
 
   const svgRef = useRef<SVGSVGElement>();
@@ -151,9 +142,9 @@ const Home: React.FunctionComponent = () => {
         <Box marginTop={{ base: 2, md: 5 }}>
           <MainMenu
             onAddPersonOpen={onAddPersonOpen}
-            onAddRelationshipOpen={onAddRelationsipOpen}
+            onAddRelationshipOpen={onAddRelationshipOpen}
             onRemovePersonOpen={onRemovePersonOpen}
-            onRemoveRelationshipOpen={onRemoveRelationsipClose}
+            onRemoveRelationshipOpen={onRemoveRelationshipOpen}
             onImport={handleImport}
             onExport={() => handleExport(title, data.nodes, data.links)}
             onExportPdf={() => handlePdfExport(title, svgRef)}
@@ -191,8 +182,8 @@ const Home: React.FunctionComponent = () => {
         onNodeSubmit={handleNodeSubmit}
       />
       <AddRelationshipModal
-        isOpen={isAddRelationsipOpen}
-        onClose={onAddRelationsipClose}
+        isOpen={isAddRelationshipOpen}
+        onClose={onAddRelationshipClose}
         nodes={data.nodes}
         onLinkSubmit={handleLinkSubmit}
       />
@@ -203,11 +194,17 @@ const Home: React.FunctionComponent = () => {
         onNodeRemove={handleNodeRemove}
       />
       <RemoveRelationshipModal
-        isOpen={isRemoveRelationsipOpen}
-        onClose={onRemoveRelationsipClose}
+        isOpen={isRemoveRelationshipOpen}
+        onClose={onRemoveRelationshipClose}
         links={data.links}
         onLinkRemove={handleLinkRemove}
       />
+      <Center width="100%" marginBottom={2}>
+        <Text fontSize="sm">
+          A <LinkComponent href="https://clgeo.io">clgeo.io</LinkComponent>{" "}
+          creation
+        </Text>
+      </Center>
     </Flex>
   );
 };
