@@ -125,12 +125,12 @@ const Home: React.FunctionComponent = () => {
   return (
     <Flex flexDirection="column" minHeight="100vh">
       <Head>
-        <title>Sociogram</title>
+        <title>Sociogram.me</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Flex margin={5} justifyContent="space-between">
         <Flex flexDirection="column">
-          <Heading>Sociogram</Heading>
+          <Heading>Sociogram.me</Heading>
           <Title title={title} handleTitleSet={(value) => setTitle(value)} />
         </Flex>
       </Flex>
