@@ -34,7 +34,7 @@ const Import: React.FunctionComponent<ImportProps> = ({ onImport }) => {
     <Flex onClick={handleImportClick}>
       <Input
         type="file"
-        accept=".sociogram"
+        accept=".json"
         display="none"
         ref={ref}
         onChange={handleUpload}

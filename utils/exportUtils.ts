@@ -4,7 +4,7 @@ import { Link, Node } from "../types";
 const handleExport = (title: string, nodes: Node[], links: Link[]) => {
   const fileName = `${
     title ? snakeCase(title) : "sociogram"
-  }-${Date.now()}.sociogram`;
+  }-${Date.now()}.json`;
 
   const json = JSON.stringify({
     title,
