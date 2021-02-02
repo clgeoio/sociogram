@@ -1,4 +1,4 @@
-import { Button, Flex, Input, Spinner } from "@chakra-ui/react";
+import { Flex, Input, Spinner } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
 import { Link, Node } from "../types";
 
@@ -31,7 +31,7 @@ const Import: React.FunctionComponent<ImportProps> = ({ onImport }) => {
   };
 
   return (
-    <Flex onClick={handleImportClick}>
+    <Flex width="100%" onClick={handleImportClick}>
       <Input
         type="file"
         accept=".json"
