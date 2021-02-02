@@ -65,6 +65,9 @@ const Home: React.FunctionComponent = () => {
   });
 
   const handleNodeSubmit = (nodeId: string) => {
+    if (data.nodes.some((node) => node.id === nodeId)) {
+      return;
+    }
     setData({
       nodes: [
         ...data.nodes,
