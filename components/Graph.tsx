@@ -53,7 +53,7 @@ const Graph: React.FunctionComponent<GraphProps> = ({
           .distance(100)
       )
       .force("center", forceCenter(width / 2, height / 2))
-      .force("collision", forceCollide().radius(40))
+      .force("collision", forceCollide().radius(80))
       .on("tick", () => {
         link
           .attr("x1", (d: any) => d.source.x)
@@ -70,7 +70,6 @@ const Graph: React.FunctionComponent<GraphProps> = ({
       .data(links)
       .enter()
       .append("line")
-
       .attr("marker-end", "url(#arrow)")
       .style("stroke", "#999999")
       .style("stroke-opacity", 0.6)

@@ -20,6 +20,7 @@ interface AddRelationshipModalProps {
   onLinkSubmit: (fromNodeId: string, toNodeId: string) => void;
   isOpen: boolean;
   onClose: () => void;
+  error?: string;
 }
 
 const AddRelationshipModal: React.FunctionComponent<AddRelationshipModalProps> = ({
@@ -27,6 +28,7 @@ const AddRelationshipModal: React.FunctionComponent<AddRelationshipModalProps> =
   onClose,
   nodes,
   onLinkSubmit,
+  error,
 }) => {
   const fromLinkRef = useRef<HTMLSelectElement>();
   const toLinkRef = useRef<HTMLSelectElement>();
@@ -48,7 +50,9 @@ const AddRelationshipModal: React.FunctionComponent<AddRelationshipModalProps> =
         <ModalCloseButton />
         <ModalBody>
           <FormControl>
-            <FormLabel fontSize="sm">Select Person:</FormLabel>
+            <FormLabel fontSize="sm" er>
+              Select Person:
+            </FormLabel>
             <Select
               ref={fromLinkRef}
               size="sm"
@@ -82,6 +86,7 @@ const AddRelationshipModal: React.FunctionComponent<AddRelationshipModalProps> =
                   ))}
             </Select>
           </FormControl>
+          {error && <Text color="red.300">{error}</Text>}
         </ModalBody>
 
         <ModalFooter>

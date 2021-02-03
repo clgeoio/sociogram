@@ -19,6 +19,7 @@ import { RemovePersonModal } from "../components/RemovePersonModal";
 import { RemoveRelationshipModal } from "../components/RemoveRelationshipModal";
 import { MainMenu } from "../components/MainMenu";
 import { handleExport, handlePdfExport } from "../utils/exportUtils";
+import { link, linkSync } from "fs";
 
 const updateNodeGroupValue = (nodes: Node[], nodeId: string, value: number) => {
   const nodeCopy = nodes.slice();
@@ -115,6 +116,14 @@ const Home: React.FunctionComponent = () => {
   };
 
   const handleLinkSubmit = (fromNodeId: string, toNodeId: string) => {
+    if (
+      data.links.some(
+        (link) => link.source.id === fromNodeId && link.target.id === toNodeId
+      )
+    ) {
+      return;
+    }
+
     setData({
       links: [
         ...data.links,
