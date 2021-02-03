@@ -44,7 +44,7 @@ const Graph: React.FunctionComponent<GraphProps> = ({
     );
 
     // create force simulation
-    forceSimulation(nodes)
+    const force = forceSimulation(nodes)
       .force("charge", forceManyBody().strength(-39))
       .force(
         "link",
@@ -90,6 +90,7 @@ const Graph: React.FunctionComponent<GraphProps> = ({
           select(this)
             .raise()
             .attr("transform", (d: any) => "translate(" + [d.x, d.y] + ")");
+          force.restart();
         })
       );
 
