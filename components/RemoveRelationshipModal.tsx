@@ -56,16 +56,20 @@ const RemoveRelationshipModal: React.FunctionComponent<RemoveRelationshipModalPr
               backgroundColor="white"
               borderRadius={4}
               placeholder="Select relationship..."
-              onChange={(e) => console.log(e.target.selectedIndex)}
             >
-              {links.map((link) => {
-                const format = `${link.source.id} likes ${link.target.id}`;
-                return (
-                  <option key={format} data-id={link.id}>
-                    {format}
-                  </option>
-                );
-              })}
+              {links
+                .map((link) => ({
+                  ...link,
+                  format: `${link.source.id} likes ${link.target.id}`,
+                }))
+                .sort((a, b) => (a.format < b.format ? -1 : 1))
+                .map((link) => {
+                  return (
+                    <option key={link.format} data-id={link.id}>
+                      {link.format}
+                    </option>
+                  );
+                })}
             </Select>
           </FormControl>
         </ModalBody>

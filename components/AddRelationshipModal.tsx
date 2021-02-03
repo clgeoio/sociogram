@@ -9,7 +9,6 @@ import {
   ModalCloseButton,
   Text,
   Button,
-  useDisclosure,
   FormControl,
   FormLabel,
   Select,
@@ -57,11 +56,13 @@ const AddRelationshipModal: React.FunctionComponent<AddRelationshipModalProps> =
               borderRadius={4}
               placeholder="Select person..."
             >
-              {nodes.map((node) => (
-                <option key={node.id} value={node.id}>
-                  {node.id}
-                </option>
-              ))}
+              {nodes
+                .sort((a, b) => (a.id < b.id ? -1 : 1))
+                .map((node) => (
+                  <option key={node.id} value={node.id}>
+                    {node.id}
+                  </option>
+                ))}
             </Select>
             <Text>likes</Text>
             <Select
@@ -72,11 +73,13 @@ const AddRelationshipModal: React.FunctionComponent<AddRelationshipModalProps> =
               placeholder="Select person..."
             >
               {nodes.length > 1 &&
-                nodes.reverse().map((node) => (
-                  <option key={node.id} value={node.id}>
-                    {node.id}
-                  </option>
-                ))}
+                nodes
+                  .sort((a, b) => (a.id < b.id ? -1 : 1))
+                  .map((node) => (
+                    <option key={node.id} value={node.id}>
+                      {node.id}
+                    </option>
+                  ))}
             </Select>
           </FormControl>
         </ModalBody>

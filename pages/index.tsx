@@ -30,6 +30,22 @@ const updateNodeGroupValue = (nodes: Node[], nodeId: string, value: number) => {
   return nodeCopy;
 };
 
+const updateNodesGroupValue = (
+  nodes: Node[],
+  nodeIds: string[],
+  value: number
+) => {
+  const nodeCopy = nodes.slice();
+  for (const nodeId of nodeIds) {
+    const nodeIndex = nodeCopy.findIndex((node) => node.id === nodeId);
+    if (nodeCopy[nodeIndex]) {
+      nodeCopy[nodeIndex].group += value;
+    }
+  }
+
+  return nodeCopy;
+};
+
 interface Data {
   links: Link[];
   nodes: Node[];
@@ -68,6 +84,7 @@ const Home: React.FunctionComponent = () => {
     if (data.nodes.some((node) => node.id === nodeId)) {
       return;
     }
+
     setData({
       nodes: [
         ...data.nodes,
@@ -81,11 +98,19 @@ const Home: React.FunctionComponent = () => {
   };
 
   const handleNodeRemove = (nodeId: string) => {
+    const nodesToChange = data.links
+      .filter((link) => link.source.id === nodeId)
+      .map((link) => link.target.id);
+
     setData({
       links: data.links.filter(
         (link) => link.source.id != nodeId && link.target.id != nodeId
       ),
-      nodes: data.nodes.filter((node) => node.id !== nodeId),
+      nodes: updateNodesGroupValue(
+        data.nodes.filter((node) => node.id !== nodeId),
+        nodesToChange,
+        -1
+      ),
     });
   };
 
